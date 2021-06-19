@@ -1,7 +1,7 @@
 
 # Run an application on Kubernetes
 
-## Namespaces
+### Namespaces
 
 Namespaces allow to logically distribute your applications, generally based on teams, projects or applications stacks.
 Resources names are unique within a namespace that means that you could have a service named `webserver` on 2 different namespaces.
@@ -31,11 +31,11 @@ CURRENT   NAME           CLUSTER        AUTHINFO             NAMESPACE
 *         k3d-workshop   k3d-workshop   admin@k3d-workshop   foo
 ```
 
-## Create your first pod
+### Create your first pod
 
-Creating resources in Kubernetes is often done by applying yaml content through the API.
+Creating resources in Kubernetes is often done by applying a yaml/json definition through the API.
 
-Start by creating a pretty simple pod:
+Start by creating a pretty simple `pod`:
 
 ```console
 $ kubectl apply -f manifests/pod.yaml --namespace foo
@@ -69,7 +69,7 @@ $ kubectl get po web --template={{.status.podIP}}
 10.42.1.6
 ```
 
-This is worth noting that a pod isn't controlled by a `replicaset`. That means that when it is deleted, it is not restarted automatically.
+This is worth noting that a pod isn't controlled by a `replicaset-controller`. That means that when it is deleted, it is not restarted automatically.
 
 ```console
 $ kubectl delete po web
@@ -79,27 +79,50 @@ $ kubectl get po
 No resources found in foo namespace.
 ```
 
-## Create a simple webserver deployment
+### Create a simple webserver deployment
 
-kubectl create deployment podinfo --image stefanprodan/podinfo
+A deployment is a resource that describes the desired state of an application. Kubernetes will ensure that its current status is aligned with the desired one.
+
+Creating a simple deployment can be done using `kubectl`
+
+```console
+$ kubectl create deployment podinfo --image stefanprodan/podinfo
 deployment.apps/podinfo created
+```
 
-kubectl get deploy
+After a few seconds the deployment will be up to date, meaning that the a pod will be up and running.
+
+```console
+$ kubectl get deploy
 NAME      READY   UP-TO-DATE   AVAILABLE   AGE
 podinfo   1/1     1            1           14s
+```
 
-kubectl get replicasets
+### Replicas and scaling
+
+A deployment creates a `replicaset` under the hood in order to ensure that the number of desired replicas (pods) matches the desired one.
+
+```console
+$ kubectl get replicasets
 NAME                 DESIRED   CURRENT   READY   AGE
 podinfo-7fbb45ccfc   1         1         1       36s
+```
 
-kubectl scale deploy podinfo --replicas 6
+Creating a deployment without specifying the number of replicas will create a single replica. We can scale it on demand using
+
+```console
+$ kubectl scale deploy podinfo --replicas 6
 deployment.apps/podinfo scaled
 
-kubectl rollout status deployment podinfo
+$ kubectl rollout status deployment podinfo
 Waiting for deployment "podinfo" rollout to finish: 4 of 6 updated replicas are available...
 Waiting for deployment "podinfo" rollout to finish: 5 of 6 updated replicas are available...
 deployment "podinfo" successfully rolled out
+```
 
+The default Kubernetes scheduler will try to spread evenly the pods according to the available resources on worker nodes.
+
+```console
 kubectl get po -o wide
 NAME                       READY   STATUS    RESTARTS   AGE    IP           NODE                    NOMINATED NODE   READINESS GATES
 podinfo-7fbb45ccfc-dwxtx   1/1     Running   0          114s   10.42.1.8    k3d-workshop-agent-0    <none>           <none>
@@ -108,39 +131,89 @@ podinfo-7fbb45ccfc-4fk9z   1/1     Running   0          34s    10.42.1.9    k3d-
 podinfo-7fbb45ccfc-gqwz6   1/1     Running   0          34s    10.42.1.10   k3d-workshop-agent-0    <none>           <none>
 podinfo-7fbb45ccfc-4qgvs   1/1     Running   0          34s    10.42.0.8    k3d-workshop-server-0   <none>           <none>
 podinfo-7fbb45ccfc-r6dn5   1/1     Running   0          34s    10.42.0.9    k3d-workshop-server-0   <none>           <none>
+```
 
-kubectl delete po podinfo-7fbb45ccfc-r6dn5
+The deployment controller will ensure to start new pods if the number of replicas doesn't match its configuration.
+
+```console
+$ kubectl delete po podinfo-7fbb45ccfc-r6dn5
 pod "podinfo-7fbb45ccfc-r6dn5" deleted
 
-kubectl get deploy
+$ kubectl describe rs podinfo-7fbb45ccfc
+Name:           podinfo-7fbb45ccfc
+Namespace:      foo
+Selector:       app=podinfo,pod-template-hash=7fbb45ccfc
+Labels:         app=podinfo
+                pod-template-hash=7fbb45ccfc
+Annotations:    deployment.kubernetes.io/desired-replicas: 6
+                deployment.kubernetes.io/max-replicas: 8
+                deployment.kubernetes.io/revision: 5
+                deployment.kubernetes.io/revision-history: 1,3
+Controlled By:  Deployment/podinfo
+Replicas:       6 current / 6 desired
+Pods Status:    6 Running / 0 Waiting / 0 Succeeded / 0 Failed
+...
+Events:
+  Type    Reason            Age                From                   Message
+  ----    ------            ----               ----                   -------
+...
+  Normal  SuccessfulCreate  16h (x3 over 16h)  replicaset-controller  (combined from similar events): Created pod: podinfo-7fbb45ccfc-pkt4r
+  Normal  SuccessfulCreate  96s                replicaset-controller  Created pod: podinfo-7fbb45ccfc-bkm8n
+
+$ kubectl get deploy
 NAME      READY   UP-TO-DATE   AVAILABLE   AGE
 podinfo   6/6     6            6           18m
+```
 
-kubectl set image deployment podinfo podinfo=stefanprodan/podinfo:5.2.1
+### Rolling update
+
+Using a deployment allows to manage the application lifecycle. Changing its configuration will trigger a **rolling update**.
+
+First of all we'll change the image of our deployment
+
+```console
+$ kubectl set image deployment podinfo podinfo=stefanprodan/podinfo:5.2.1
 deployment.apps/podinfo image updated
+```
 
+During a rolling update a new `replicaset` is created in order to update the application in place without any downtime.
+New pods (with the current deployment state) will be created in the new replicaset while they will be deleted progressively from the previous replicaset.
 
+```console
 kubectl get rs -o wide
 NAME                 DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES                       SELECTOR
 podinfo-7fbb45ccfc   0         0         0       21m   podinfo      stefanprodan/podinfo         app=podinfo,pod-template-hash=7fbb45ccfc
 podinfo-564b4ddd7c   6         6         6       30s   podinfo      stefanprodan/podinfo:5.2.1   app=podinfo,pod-template-hash=564b4ddd7c
+```
 
-kubectl rollout undo deployment podinfo
+Keeping the old replicaset makes very easy to rollback
+
+```console
+$ kubectl rollout undo deployment podinfo
 deployment.apps/podinfo rolled back
 
-kubectl get rs -o wide
+$ kubectl get rs -o wide
 NAME                 DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES                       SELECTOR
 podinfo-7fbb45ccfc   6         6         6       22m   podinfo      stefanprodan/podinfo         app=podinfo,pod-template-hash=7fbb45ccfc
 podinfo-564b4ddd7c   0         0         0       77s   podinfo      stefanprodan/podinfo:5.2.1   app=podinfo,pod-template-hash=564b4ddd7c
+```
 
 ## Expose a deployment
 
-kubectl expose deploy podinfo --port 9898
-service/podinfo exposed
+Now that we have a running web application we may want to access it.
+There are several ways to expose an app, here we'll use the easiest way: Create a service and run a `port-forward`.
 
-$ kubectl get svc -o yaml podinfo
+The following command will create a `service` which will be in charge of forwarding calls through the tcp port 9898
 
 ```console
+$ kubectl expose deploy podinfo --port 9898
+service/podinfo exposed
+```
+
+We can get more information on the service as follows
+
+```console
+$ kubectl get svc -o yaml podinfo
 apiVersion: v1
 kind: Service
 metadata:
@@ -161,11 +234,30 @@ spec:
     app: podinfo
 ```
 
-kubectl get endpoints
+A service uses the `selector` above to identify on which pod to forward the traffic and usually creates the `endpoints` accordingly.
+
+```console
+$ kubectl get po -l app=podinfo
+NAME                       READY   STATUS    RESTARTS   AGE
+podinfo-7fbb45ccfc-bkm8n   1/1     Running   1          146m
+podinfo-7fbb45ccfc-sbqht   1/1     Running   2          18h
+...
+
+$ kubectl get endpoints
 NAME      ENDPOINTS                                                     AGE
 podinfo   10.42.0.16:9898,10.42.0.17:9898,10.42.1.18:9898 + 3 more...   92s
+```
 
-curl http://localhost:9898
+The service we've created has an IP that's only accessible from within the cluster. Using the `port-forward` command we're able to forward the traffic from our local machine to the application (through the API server).
+Note that you can target either a deployment, a service or a single pod
+
+```console
+
+$ kubectl port-forward svc/podinfo 9898 &
+Forwarding from 127.0.0.1:9898 -> 9898
+Forwarding from [::1]:9898 -> 9898
+
+$ curl http://localhost:9898
 Handling connection for 9898
 {
   "hostname": "podinfo-7fbb45ccfc-sbqht",
@@ -180,3 +272,14 @@ Handling connection for 9898
   "num_goroutine": "6",
   "num_cpu": "16"
 }
+```
+
+## Cleanup
+
+In this section we created 2 resources: a deployment and a service.
+
+```console
+$ kubectl delete svc,deploy podinfo
+service "podinfo" deleted
+deployment.apps "podinfo" deleted
+```
