@@ -18,10 +18,8 @@
 ## Agenda
 
 * **[Prepare your local Kubernetes environment](docs/01_local_kubernetes.md)**
-* **[Deploy a MySQL database](docs/02_ecosystem.md)**
-* **[Build your first chart](docs/03_build_chart.md)**
-* **[Application lifecycle](docs/04_lifecycle.md)**
-* **[Templating challenge](docs/05_templating_practice.md)**
+* **[Run an application on Kubernetes](docs/02_run_an_application.md)**
+* **[Deploy a Wordpress](docs/03_wordpress.md)**
 
 
 ## Cleanup
