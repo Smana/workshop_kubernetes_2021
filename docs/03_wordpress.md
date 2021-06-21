@@ -4,11 +4,21 @@
 
 **Goal**: Understand
 * how to configure an application
-* inject secrets
+* inject secrets and configuration
 * communication between services
 * basics of a stateful workload
 
+:warning: This example is not made for a production ready use case. You would probably use [statefulsets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) for the persistent workloads and the Helm chart, a CD / GitOps pipeline.
+
 ## A database with a persistent volume
+
+Check that your cluster is up and running and that your context is still configured with the namespace `foo`
+
+```console
+ kubectl config get-contexts
+CURRENT   NAME           CLUSTER        AUTHINFO             NAMESPACE
+*         k3d-workshop   k3d-workshop   admin@k3d-workshop   foo
+```
 
 ### Create a persistent volume claim
 
@@ -25,7 +35,7 @@ NAME               STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   A
 local-path-mysql   Pending                                      local-path     16s
 ```
 
-#### Create the MySQL secret
+### Create the MySQL secret
 
 In Kubernetes sensitive data are stored in `Secrets`. Here we'll create a secret that stores the MySQL root password
 
@@ -153,7 +163,7 @@ Source:
 Events:            <none>
 ```
 
-```
+```console
 docker exec k3d-workshop-agent-0 ls /var/lib/rancher/k3s/storage/pvc-4bb3c033-2261-4d5c-ba61-41e364769599_foo_local-path-mysql
 auto.cnf
 foobar
@@ -197,3 +207,38 @@ mysql> show databases;
 +--------------------+
 4 rows in set (0.00 sec)
 ```
+
+## The Wordpress deployment
+
+Now we will deploy the wordpress instance with a persistent volume.
+
+So first of all create a pvc as follows
+
+```console
+$ kubectl apply -f manifests/wordpress/pvc.yaml
+persistentvolumeclaim/wp-pv-claim created
+```
+
+Then create the deployment. Note that it is configured with our mysql database as backend.
+
+```console
+$ kubectl apply -f manifests/wordpress/deployment.yaml
+deployment.apps/wordpress created
+
+$ kubectl get deploy
+NAME              READY   UP-TO-DATE   AVAILABLE   AGE
+wordpress-mysql   1/1     1            1           11h
+wordpress         1/1     1            1           4s
+```
+
+Most of the time, when we want to expose an HTTP service to the outside world (outside of the cluster), we would create an [ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
+
+```console
+kubectl apply -f manifests/wordpress/ingress.yaml
+ingress.networking.k8s.io/wordpress created
+```
+
+With k3d the ingress endpoint has been defined when we've created the cluster. With the parameter `-p "8081:80@loadbalancer"`
+Our wordpress should therefore be accessible through `http://localhost:8081`
+
+![wordpress](images/wordpress.png)

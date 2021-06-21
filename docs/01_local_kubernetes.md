@@ -13,10 +13,10 @@ After installing the binary you should enable the completion (bash or zsh) as fo
 $ source <(k3d completion bash)
 ```
 
-Then create the sandbox cluster named "**workshop**" with an additionnal worker
+Then create the sandbox cluster named "**workshop**" with an additional worker
 
 ```console
-$ k3d cluster create workshop -a 1
+$ k3d cluster create workshop -p "8081:80@loadbalancer" --agents 1
 INFO[0000] Prep: Network
 INFO[0000] Created network 'k3d-workshop' (ce74508d3fe09d8622f1ae83effd412d754dfdb441aa9d550723805f9b528c6b)
 INFO[0000] Created volume 'k3d-workshop-images'
@@ -58,6 +58,21 @@ k3d-workshop-agent-0    Ready    <none>                 2m34s   v1.21.1+k3s1
 k3d-workshop-server-0   Ready    control-plane,master   2m44s   v1.21.1+k3s1
 ```
 
+You can also have a look to the default cluster's components that are all located in the namespace `kube-system`
+
+```console
+$ kubectl get pods -n kube-system
+NAME                                      READY   STATUS      RESTARTS   AGE
+helm-install-traefik-crd-h5j7m            0/1     Completed   0          16h
+helm-install-traefik-8mzhk                0/1     Completed   0          16h
+svclb-traefik-gh4rk                       2/2     Running     2          16h
+traefik-97b44b794-lcmh4                   1/1     Running     1          16h
+coredns-7448499f4d-h7xvn                  1/1     Running     2          16h
+local-path-provisioner-5ff76fc89d-qvpf7   1/1     Running     1          16h
+svclb-traefik-cbvmp                       2/2     Running     2          16h
+metrics-server-86cbb8457f-5v9ls           1/1     Running     1          16h
+```
+
 ## The CLI configuration
 
 The main interface to the Kubernetes API is `kubectl`. This CLI is configured with what we call a `kubeconfig`
@@ -88,6 +103,7 @@ It is really easy to extend the capabilities of he `kubectl` CLI.
 Here is a basic "hello-world" example:
 
 Write a dumb script, just ensure that it starts with `kubectl-` and put it in your path
+
 ```console
 $ cat > kubectl-helloworld<<EOF
 #!/bin/bash
@@ -98,6 +114,7 @@ $ chmod u+x && sudo mv kubectl-helloworld /usr/local/bin
 ```
 
 Then it can be used as an argument of kubectl
+
 ```console
 $ kubectl helloworld
 Hello world!
@@ -131,8 +148,8 @@ apparmor-manager                Manage AppArmor profiles for cluster.           
 
 For the current workshop we'll make use of `ctx` `ns`
 
-* ctx: Switch between contexts in your kubeconfig (Really helpful when you have multiple clusters to manage)
-* ns: Switch between Kubernetes namespaces (Avoid to specify the namespace for each kubectl commands when working on a given namespace)
+* `ctx`: Switch between contexts in your kubeconfig (Really helpful when you have multiple clusters to manage)
+* `ns`: Switch between Kubernetes namespaces (Avoid to specify the namespace for each kubectl commands when working on a given namespace)
 
 ```console
 $ kubectl krew install ctx ns
