@@ -6,7 +6,7 @@ Resources allocation in Kubernetes is made using `requests` and `limits` in the
 * `requests`: What the container is guaranteed to get. These values are used when the scheduler takes a decision on where (what node) to place a given pod.
 * `limits`: Are values that cannot be exceeded
 
-:info: When you look for the documentation of resources specs with `explain`
+:information_source: When you look for the documentation of resources specs with `explain`
 ```console
 $ kubectl explain --recursive pod.spec.containers.resources.limits
 KIND:     Pod
@@ -24,7 +24,6 @@ There are different ways to edit its current state (`kubectl edit`, `apply`, `pa
 
 ```console
 $ kubectl edit deploy wordpress
-deployment.apps/wordpress edited
 ```
 
 replace `resources: {}` with this block
@@ -76,7 +75,7 @@ $ kubectl run -ti --rm bench --image=jess/wrk -- /bin/sh -c 'wrk -t12 -c100 -d18
 
 During the benchmark above (3 minutes duration) let's have a look to the hpa
 
-``console
+```console
 $ watch kubectl get hpa
 Every 2.0s: kubectl get hpa
 hostname: Tue Jun 22 11:13:08 2021

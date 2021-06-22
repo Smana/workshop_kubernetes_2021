@@ -242,6 +242,104 @@ Our wordpress should therefore be accessible through `http://localhost:8081`
 ![wordpress](images/wordpress.png)
 
 
-:warning: Do not delete anything, we'll make use of these resources in the [next lab](04_resources_autoscale.md)
+### Configure your pods
+
+A `ConfigMap` is a kubernetes resources that stores non-sensitive data. Its content can be consumed as config files, environment variables or command args.
+
+Let's consider that we need a configfile to be mounted in our wordpress deployment as well as an environment variable made available.
+
+Create a dumb "hello world" config file
+
+```console
+$ echo "Hello World!" > /tmp/helloworld.conf
+```
+
+Then we'll create a configmap that contains a file and environment variable we want to make use of.
+**Note** This following command doesn't actually apply the resource on our Kubernetes cluster. It just generate a local yaml file using `--dry-run` and `-o yaml`.
+
+```console
+$ kubectl create configmap helloworld --from-file=/tmp/helloworld.conf --from-literal=HELLO=WORLD -o yaml --dry-run=client
+```
+
+Check the configmap
+```yaml
+apiVersion: v1
+data:
+  HELLO: WORLD
+  helloworld.conf: |
+    Hello World!
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: helloworld
+```
+
+And apply it
+
+```console
+$ kubectl apply -f /tmp/cm.yaml
+configmap/helloworld created
+```
+
+Now we're gonna make use of it by changing the wordpress deployment. For this kind of change it is recommended to use an IDE with a Kubernetes plugin that will highlight errors.
+
+Edit the file located here: `manifests/wordpress/deployment.yaml`
+
+```yaml
+...
+          env:
+            - name: WORDPRESS_DB_HOST
+              value: wordpress-mysql
+            - name: WORDPRESS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-pass
+                  key: password
+            - name: HELLO
+              valueFrom:
+                configMapKeyRef:
+                  name: helloworld
+                  key: HELLO
+          volumeMounts:
+            - name: wordpress-persistent-storage
+              mountPath: /var/www/html
+            - name: helloworld-config
+              mountPath: /config
+      volumes:
+        - name: wordpress-persistent-storage
+          persistentVolumeClaim:
+            claimName: wp-pv-claim
+        - name: helloworld-config
+          configMap:
+            name: helloworld
+            items:
+              - key: helloworld.conf
+                path: helloworld.conf
+```
+
+Applying this change will trigger a rolling-update
+
+```console
+$ kubectl apply -f manifests/wordpress/deployment.yaml
+deployment.apps/wordpress configured
+
+$ kubectl get po
+NAME                               READY   STATUS    RESTARTS   AGE
+wordpress-mysql-6c597b98bd-4mbbd   1/1     Running   2          41h
+wordpress-594f88c9c4-n9qqr         1/1     Running   0          5s
+```
+
+And the configuration will be available in the newly created pod
+
+```console
+$ kubectl exec -ti wordpress-594f88c9c4-n9qqr -- env | grep HELLO
+HELLO=WORLD
+
+$ kubectl exec -ti wordpress-594f88c9c4-n9qqr -- cat /config/helloworld.conf
+Hello World!
+```
+
+
+:warning: Do not delete anything, we'll make use of these resources in the next section.
 
 :arrow_right: [Next: Resources in Kubernetes](04_resources_autoscale.md)
