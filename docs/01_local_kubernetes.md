@@ -39,7 +39,7 @@ kubectl config use-context k3d-workshop
 kubectl cluster-info
 ```
 
-As k3d is made to be used on top of docker you can see the status of the running containers. You should have 3 containers, one for the loadbalancing, one for the control-plane and an agent (worker).
+As k3d is made to be used on top of **docker** you can see the status of the running containers. You should have 3 containers, one for the loadbalancing, one for the control-plane and an agent (worker).
 
 ```console
 $ docker ps
@@ -96,13 +96,12 @@ CoreDNS is running at https://0.0.0.0:43903/api/v1/namespaces/kube-system/servic
 Metrics-server is running at https://0.0.0.0:43903/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
 ```
 
-
 ## kubectl plugins
 
 It is really easy to extend the capabilities of he `kubectl` CLI.
 Here is a basic "hello-world" example:
 
-Write a dumb script, just ensure that it starts with `kubectl-` and put it in your path
+Write a dumb script, just ensure its name is prefixed with `kubectl-` and put it in your `PATH`
 
 ```console
 $ cat > kubectl-helloworld<<EOF
@@ -110,7 +109,7 @@ $ cat > kubectl-helloworld<<EOF
 echo "Hello world!"
 EOF
 
-$ chmod u+x && sudo mv kubectl-helloworld /usr/local/bin
+$ chmod u+x kubectl-helloworld && sudo mv kubectl-helloworld /usr/local/bin
 ```
 
 Then it can be used as an argument of kubectl
@@ -165,3 +164,5 @@ $ kubectl ns
 Context "k3d-workshop" modified.
 Active namespace is "kube-system".
 ```
+
+:arrow_right: [Next: Run an application on Kubernetes](02_run_an_application.md)

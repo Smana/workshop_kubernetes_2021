@@ -1,6 +1,10 @@
-# Kubernetes workshop
+# Introduction to Kubernetes (through hands-on)
 
 :warning: Work in progress
+
+This repository aims to quickly learn the basics of [Kubernetes](https://kubernetes.io/)
+
+:warning: None of the examples given here are made for production.
 
 :construction: Todo
 

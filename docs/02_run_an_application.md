@@ -15,7 +15,7 @@ $ kubectl create ns foo
 namespace/foo created
 ```
 
-And we'll make use of the plugin installed in the previous section to set the default namespace as follows
+And we'll make use of the plugin `ns` installed in the previous section to set the default namespace as follows
 
 ```console
 $ kubectl ns
@@ -81,7 +81,7 @@ No resources found in foo namespace.
 
 ### Create a simple webserver deployment
 
-A deployment is a resource that describes the desired state of an application. Kubernetes will ensure that its current status is aligned with the desired one.
+A `deployment` is a resource that describes the desired state of an application. Kubernetes will ensure that its **current** status is aligned with the **desired** one.
 
 Creating a simple deployment can be done using `kubectl`
 
@@ -90,7 +90,7 @@ $ kubectl create deployment podinfo --image stefanprodan/podinfo
 deployment.apps/podinfo created
 ```
 
-After a few seconds the deployment will be up to date, meaning that the a pod will be up and running.
+After a few seconds the deployment will be up to date, meaning that the a pod is up and running.
 
 ```console
 $ kubectl get deploy
@@ -100,7 +100,7 @@ podinfo   1/1     1            1           14s
 
 ### Replicas and scaling
 
-A deployment creates a `replicaset` under the hood in order to ensure that the number of desired replicas (pods) matches the desired one.
+A deployment creates a `replicaset` under the hood in order to ensure that the number of replicas (pods) matches the desired one.
 
 ```console
 $ kubectl get replicasets
@@ -169,7 +169,7 @@ podinfo   6/6     6            6           18m
 
 Using a deployment allows to manage the application lifecycle. Changing its configuration will trigger a **rolling update**.
 
-First of all we'll change the image of our deployment
+First of all we'll change the image tag of our deployment
 
 ```console
 $ kubectl set image deployment podinfo podinfo=stefanprodan/podinfo:5.2.1
@@ -283,3 +283,5 @@ $ kubectl delete svc,deploy podinfo
 service "podinfo" deleted
 deployment.apps "podinfo" deleted
 ```
+
+:arrow_right: [Next: Deploy a Wordpress](03_wordpress.md)

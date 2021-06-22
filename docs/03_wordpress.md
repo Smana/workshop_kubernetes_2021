@@ -8,8 +8,6 @@
 * communication between services
 * basics of a stateful workload
 
-:warning: This example is not made for a production ready use case. You would probably use [statefulsets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) for the persistent workloads and the Helm chart, a CD / GitOps pipeline.
-
 ## A database with a persistent volume
 
 Check that your cluster is up and running and that your context is still configured with the namespace `foo`
@@ -245,3 +243,5 @@ Our wordpress should therefore be accessible through `http://localhost:8081`
 
 
 :warning: Do not delete anything, we'll make use of these resources in the [next lab](04_resources_autoscale.md)
+
+:arrow_right: [Next: Resources in Kubernetes](04_resources_autoscale.md)
