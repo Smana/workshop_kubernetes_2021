@@ -242,3 +242,6 @@ With k3d the ingress endpoint has been defined when we've created the cluster. W
 Our wordpress should therefore be accessible through `http://localhost:8081`
 
 ![wordpress](images/wordpress.png)
+
+
+:warning: Do not delete anything, we'll make use of these resources in the [next lab](04_resources_autoscale.md)

@@ -1,13 +1,12 @@
 # Kubernetes workshop
 
-:warning: Work in progess
+:warning: Work in progress
 
-**Todo**
-* ServiceAccounts and RBAC (create a serviceaccount for an external application)
-* Persistent volumes (deploy a database)
-* Deployment, rolling update, crashloopback, logs, autoscaling
-* Jobs, cronjobs
-* Go client, Python client
+:construction: Todo
+
+* Troubleshooting, logs, events, debug containers, crashloobackoff
+* RBAC
+* jobs, cronjobs
 
 ## Requirements
 
@@ -20,6 +19,7 @@
 * **[Prepare your local Kubernetes environment](docs/01_local_kubernetes.md)**
 * **[Run an application on Kubernetes](docs/02_run_an_application.md)**
 * **[Deploy a Wordpress](docs/03_wordpress.md)**
+* **[Resources and autoscaling](docs/04_resources_autoscale.md)**
 
 ## Cleanup
 
