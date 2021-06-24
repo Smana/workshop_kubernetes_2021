@@ -8,7 +8,6 @@ This repository aims to quickly learn the basics of [Kubernetes](https://kuberne
 
 :construction: Todo
 
-* Troubleshooting, logs, events, debug containers, crashloobackoff
 * RBAC
 * jobs, cronjobs
 
@@ -24,6 +23,7 @@ This repository aims to quickly learn the basics of [Kubernetes](https://kuberne
 * **[Run an application on Kubernetes](docs/02_run_an_application.md)**
 * **[Deploy a Wordpress](docs/03_wordpress.md)**
 * **[Resources and autoscaling](docs/04_resources_autoscale.md)**
+* **[Troubleshooting](docs/05_troubleshooting.md)**
 
 ## Cleanup
 

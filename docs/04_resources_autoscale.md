@@ -6,7 +6,8 @@ Resources allocation in Kubernetes is made using `requests` and `limits` in the
 * `requests`: What the container is guaranteed to get. These values are used when the scheduler takes a decision on where (what node) to place a given pod.
 * `limits`: Are values that cannot be exceeded
 
-:information_source: When you look for the documentation of resources specs with `explain`
+:information_source: You can use `explain` to have a look to the documentation of resources.
+
 ```console
 $ kubectl explain --recursive pod.spec.containers.resources.limits
 KIND:     Pod
