@@ -7,7 +7,7 @@
 In order to have an easily provisioned temporary playground we’ll make use of **k3d** which is a lightweight local Kubernetes instance.
 (Note that they are alternatives to run a local Kubernetes cluster such as: `kubeadm`, `microk8s`, `minikube`)
 
-After installing the binary you should enable the completion (bash or zsh) as follows (do the same for both helm and k3d).
+After installing the binary you should enable the completion (bash or zsh) as follows (do the same for both kubectl and k3d).
 
 ```console
 $ source <(k3d completion bash)
@@ -96,7 +96,7 @@ CoreDNS is running at https://0.0.0.0:43903/api/v1/namespaces/kube-system/servic
 Metrics-server is running at https://0.0.0.0:43903/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
 ```
 
-## kubectl plugins
+## Kubectl plugins
 
 It is really easy to extend the capabilities of he `kubectl` CLI.
 Here is a basic "hello-world" example:

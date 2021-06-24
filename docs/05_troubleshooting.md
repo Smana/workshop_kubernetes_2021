@@ -170,6 +170,15 @@ $ kubectl rollout undo deployment web
 deployment.apps/web rolled back
 ```
 
-# learnk8s documentation
+## Cleanup
+
+```console
+$ kubectl delete deploy web
+deployment.apps "web" deleted
+```
+
+## learnk8s documentation
 
 There is a great documentation that contains all the steps that help debugging a deployment: [https://learnk8s.io/troubleshooting-deployments](https://learnk8s.io/troubleshooting-deployments)
+
+:arrow_right: [Next: RBAC](06_rbac.md)

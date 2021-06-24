@@ -96,3 +96,5 @@ wordpress   Deployment/wordpress   998%/50%   1         5         5          9m3
 ```
 
 That was a pretty simple configuration, basing the autoscaling on CPU usage for a webserver makes sense. You can also base the autoscaling on any [other metrics](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#support-for-custom-metrics) that are reported by your application.
+
+:arrow_right: [Next: Troubleshooting](05_troubleshooting.md)
