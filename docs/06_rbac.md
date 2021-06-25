@@ -4,7 +4,6 @@
 
 :information_source: When it makes sense you can use the [default roles](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) that are available in all Kubernetes installation instead of having to maintain custom ones.
 
-
 For this lab what we want to achieve is to give permissions the following permissions to an application `myapp`:
 
 * read the configmaps in the namespace `foo`

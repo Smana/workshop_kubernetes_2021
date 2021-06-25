@@ -119,6 +119,12 @@ $ kubectl helloworld
 Hello world!
 ```
 
+Delete our test
+
+```console
+$ sudo rm /usr/local/bin/kubectl-helloworld
+```
+
 You can find more information on how to create a kubectl plugin [here](https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/)
 
 In order to benefit from the plugins written by the community there's a tool named [**krew**](https://krew.sigs.k8s.io/)

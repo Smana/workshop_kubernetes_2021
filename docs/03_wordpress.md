@@ -70,9 +70,11 @@ We will now create a MySQL deployment. It will be composed of a single replica 
 $ kubectl apply -f manifests/mysql/deployment.yaml
 deployment.apps/wordpress-mysql created
 
-$ kubectl get po
-NAME                               READY   STATUS    RESTARTS   AGE
-wordpress-mysql-6c597b98bd-98n8t   1/1     Running   0          31s
+$ kubectl get po -w
+NAME                               READY   STATUS              RESTARTS   AGE
+wordpress-mysql-6c597b98bd-vcm62   0/1     ContainerCreating   0          9s
+wordpress-mysql-6c597b98bd-vcm62   1/1     Running             0          13s
+^C
 ```
 
 ### Service discovery in Kubernetes
@@ -120,6 +122,9 @@ mysql> show databases;
 
 mysql> create database foobar;
 Query OK, 1 row affected (0.00 sec)
+
+mysql> exit
+Bye
 ```
 
 **Note**: You can either use the service name `wordpress-mysql`, or if your source pod is in another namespace use `wordpress-mysql.foo`
@@ -232,7 +237,10 @@ wordpress         1/1     1            1           4s
 Most of the time, when we want to expose an HTTP service to the outside world (outside of the cluster), we would create an [ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
 
 ```console
-kubectl apply -f manifests/wordpress/ingress.yaml
+$ kubectl apply -f manifests/wordpress/svc.yaml
+service/wordpress created
+
+$ kubectl apply -f manifests/wordpress/ingress.yaml
 ingress.networking.k8s.io/wordpress created
 ```
 
@@ -258,7 +266,7 @@ Then we'll create a configmap that contains a file and environment variable we w
 **Note** This following command doesn't actually apply the resource on our Kubernetes cluster. It just generate a local yaml file using `--dry-run` and `-o yaml`.
 
 ```console
-$ kubectl create configmap helloworld --from-file=/tmp/helloworld.conf --from-literal=HELLO=WORLD -o yaml --dry-run=client
+$ kubectl create configmap helloworld --from-file=/tmp/helloworld.conf --from-literal=HELLO=WORLD -o yaml --dry-run=client > /tmp/cm.yaml
 ```
 
 Check the configmap

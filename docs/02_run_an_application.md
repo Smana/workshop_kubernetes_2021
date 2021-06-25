@@ -49,7 +49,7 @@ web    1/1     Running   0          98s
 We can get detailed information about the pod as follows
 
 ```console
-$ kubectl describe po web -l run=web
+$ kubectl describe po web
 Name:         web
 Namespace:    foo
 Priority:     0
@@ -136,7 +136,7 @@ podinfo-7fbb45ccfc-r6dn5   1/1     Running   0          34s    10.42.0.9    k3d-
 The deployment controller will ensure to start new pods if the number of replicas doesn't match its configuration.
 
 ```console
-$ kubectl delete po podinfo-7fbb45ccfc-r6dn5
+$ kubectl delete po $(kubectl get po -l app=podinfo -o jsonpath='{.items[0].metadata.name}')
 pod "podinfo-7fbb45ccfc-r6dn5" deleted
 
 $ kubectl describe rs podinfo-7fbb45ccfc
@@ -279,6 +279,10 @@ Handling connection for 9898
 In this section we created 2 resources: a deployment and a service.
 
 ```console
+$ fg
+kubectl port-forward svc/podinfo 9898
+^C
+
 $ kubectl delete svc,deploy podinfo
 service "podinfo" deleted
 deployment.apps "podinfo" deleted

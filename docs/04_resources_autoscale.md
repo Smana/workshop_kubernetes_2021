@@ -41,7 +41,7 @@ replace `resources: {}` with this block
 ...
 ```
 
-The pods resources usage can be displayed using
+The pods resources usage can be displayed using (this might take a few seconds)
 
 ```console
 kubectl top pods
@@ -50,6 +50,7 @@ wordpress-694866c6b7-mqxdd         1m           171Mi
 wordpress-mysql-6c597b98bd-4mbbd   1m           531Mi
 ```
 
+Configure the autoscaling base on cpu usage. When a pod reaches 50% of its allocated cpu a new pod is created.
 
 ```console
 $ kubectl autoscale deployment wordpress --cpu-percent=50 --min=1 --max=5
@@ -85,7 +86,7 @@ NAME        REFERENCE              TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
 wordpress   Deployment/wordpress   1%/50%    1         5         1          8m28s
 ```
 
-After a few seconds we'll see that the upscaling will be done automatically based on cpu usage. Here the number of replicas will reach the maximum we defined (5 pods).
+After a few seconds we'll see that the upscaling will be done automatically. Here the number of replicas will reach the maximum we defined (5 pods).
 
 ```console
 Every 2.0s: kubectl get hpa

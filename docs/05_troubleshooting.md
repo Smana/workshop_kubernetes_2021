@@ -100,9 +100,10 @@ web-85575f4476-6qvd5   1/1     Running   0          92s
 
 We're going to simulate a service being unavailable, just change the path being checked. Here we'll use another method to modify a resource by creating a `patch` and applying it.
 
-Create a yaml `/tmp/patch.yaml` file with the following content
+Create a yaml `/tmp/patch.yaml` file
 
-```yaml
+```console
+cat > /tmp/patch.yaml <<EOF
 spec:
   template:
     spec:
@@ -111,6 +112,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /foobar
+EOF
 ```
 
 And we're going to apply our change as follows
