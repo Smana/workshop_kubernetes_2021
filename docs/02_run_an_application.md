@@ -110,6 +110,13 @@ Mon Jun 28 21:07:22 2021
 Mon Jun 28 21:07:23 2021
 ```
 
+Delete the pod
+
+```console
+$ kubectl delete po web
+pod "web" deleted
+```
+
 ### Create a simple webserver deployment
 
 A `deployment` is a resource that describes the desired state of an application. Kubernetes will ensure that its **current** status is aligned with the **desired** one.
