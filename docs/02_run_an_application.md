@@ -79,6 +79,37 @@ $ kubectl get po
 No resources found in foo namespace.
 ```
 
+### A pod with 2 containers
+
+Now create a new pod using the manifest `manifests/pod2containers.yaml`. Look at its content, we will be using a shared temporary directory and we'll mount its content on both containers. That way we can share data between 2 containers of a given pod.
+
+```console
+$ kubectl apply -f manifests/pod2containers.yaml
+pod/web created
+
+$ kubectl get pod
+NAME   READY   STATUS    RESTARTS   AGE
+web    2/2     Running   0          36s
+```
+
+We can check that the logs are accessible on the 2 containers
+
+```console
+$ kubectl logs web -c logger --tail=6 -f
+Mon Jun 28 21:06:20 2021
+Mon Jun 28 21:06:21 2021
+Mon Jun 28 21:06:22 2021
+Mon Jun 28 21:06:23 2021
+Mon Jun 28 21:06:24 2021
+
+$ kubectl exec web -c web -- tail -n 5 /log/out.log
+Mon Jun 28 21:07:19 2021
+Mon Jun 28 21:07:20 2021
+Mon Jun 28 21:07:21 2021
+Mon Jun 28 21:07:22 2021
+Mon Jun 28 21:07:23 2021
+```
+
 ### Create a simple webserver deployment
 
 A `deployment` is a resource that describes the desired state of an application. Kubernetes will ensure that its **current** status is aligned with the **desired** one.
