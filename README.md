@@ -9,6 +9,8 @@ This repository aims to quickly learn the basics of [Kubernetes](https://kuberne
 * docker
 * [k3d](https://k3d.io/) >4.x.x
 * [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
+* [krew](https://krew.sigs.k8s.io/docs/user-guide/setup/install/)
+* (optional)[fzf](https://github.com/junegunn/fzf)
 
 ## Agenda
 

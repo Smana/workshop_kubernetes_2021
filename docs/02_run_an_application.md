@@ -35,6 +35,14 @@ CURRENT   NAME           CLUSTER        AUTHINFO             NAMESPACE
 
 Creating resources in Kubernetes is often done by applying a yaml/json definition through the API.
 
+First of all we need to clone this repository and change the current path to its root
+
+```console
+$ git clone https://github.com/Smana/workshop_kubernetes_2021.git
+
+$ cd workshop_kubernetes_2021.git
+```
+
 Start by creating a pretty simple `pod`:
 
 ```console

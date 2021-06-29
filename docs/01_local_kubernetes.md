@@ -2,12 +2,14 @@
 
 **Goal**: Having a running local Kubernetes environment
 
+Ensure that you fulfilled the [requirements](../README.md#Requirements)
+
 ## Using k3d to create a cluster
 
 In order to have an easily provisioned temporary playground we’ll make use of **k3d** which is a lightweight local Kubernetes instance.
 (Note that they are alternatives to run a local Kubernetes cluster such as: `kubeadm`, `microk8s`, `minikube`)
 
-After installing the binary you should enable the completion (bash or zsh) as follows (do the same for both kubectl and k3d).
+After installing the binary you should enable the completion (bash or **zsh**) as follows (do the same for both kubectl and k3d).
 
 ```console
 $ source <(k3d completion bash)
@@ -128,8 +130,6 @@ $ sudo rm /usr/local/bin/kubectl-helloworld
 You can find more information on how to create a kubectl plugin [here](https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/)
 
 In order to benefit from the plugins written by the community there's a tool named [**krew**](https://krew.sigs.k8s.io/)
-
-First of all install the binary following this [doc](https://krew.sigs.k8s.io/docs/user-guide/setup/install/).
 
 Update the local index
 

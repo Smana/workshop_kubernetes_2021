@@ -3,10 +3,11 @@
 :information_source: This section is, for a most part, based on the official [Kubernetes doc](https://kubernetes.io/docs/tutorials/stateful-application/mysql-wordpress-persistent-volume/).
 
 **Goal**: Understand
-* how to configure an application
+
+* basics of a stateful workload
 * inject secrets and configuration
 * communication between services
-* basics of a stateful workload
+* how to configure an application
 
 ## A database with a persistent volume
 
@@ -211,7 +212,7 @@ mysql> show databases;
 4 rows in set (0.00 sec)
 ```
 
-## The Wordpress deployment
+## The Wordpress deployment
 
 Now we will deploy the wordpress instance with a persistent volume.
 
@@ -252,7 +253,7 @@ Our wordpress should therefore be accessible through `http://localhost:8081`
 
 ### Configure your pods
 
-A `ConfigMap` is a kubernetes resources that stores non-sensitive data. Its content can be consumed as config files, environment variables or command args.
+A `ConfigMap` is a kubernetes resource that stores non-sensitive data. Its content can be consumed as config files, environment variables or command args.
 
 Let's consider that we need a configfile to be mounted in our wordpress deployment as well as an environment variable made available.
 
