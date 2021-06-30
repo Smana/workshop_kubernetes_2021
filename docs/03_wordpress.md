@@ -9,6 +9,10 @@
 * communication between services
 * how to configure an application
 
+By the end of this lab we'll create the following components. You may want to come back to this schema from time to time in order to get the whole picture.
+
+![components](images/wordpress_components.png)
+
 ## A database with a persistent volume
 
 Check that your cluster is up and running and that your context is still configured with the namespace `foo`
